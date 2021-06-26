@@ -1,19 +1,47 @@
 (async () => {
     try {
-        const http = require('http');
+      const path = require('path');
+      const express = require('express');
+      const bodyParser = require('body-parser');
+      const corsMiddleware = require('cors');
+      const NodeCache = require('node-cache');
 
-        const hostname = '127.0.0.1';
-        const port = 3000;
+      global.nodeCache = new NodeCache();
+
+      // Routes
+      const routes = require('./routes');
+
+      // Loggers
+      const logger = require('./util/loggers/logger');
+      const errorHandler = require('./util/loggers/errors');
+
+      const app = express();
+      app.disable('x-powered-by');
+      app.use(bodyParser.json());
+      app.use(express.static(path.join(__dirname, '/public')));
+
+      const env = await process.env.NODE_ENV;
         
-        const server = http.createServer((req, res) => {
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'text/plain');
-          res.end('Hello, World!\n');
-        });
-        
-        server.listen(port, hostname, () => {
-          console.log(`Server running at http://${hostname}:${port}/`);
-        });
+      // Do not allow CORS if not in development
+      const allowedOrigins = async () => {
+          return env === 'development' ? '*' : /.com$/;
+      };
+
+      const cors = corsMiddleware({
+          maxAge: 5, // Optional
+          origin: await allowedOrigins(),
+          allowHeaders: ['Authorization']
+      });
+      app.use(cors);
+
+      routes(app);
+
+      // Error handling
+      errorHandler(app);
+
+      app.listen(process.env.PORT || 8085, () => {
+          logger.info(`API server is running on port: ${process.env.PORT || 8000}`);
+      });
     } catch (e) {
         console.log(e);
         // Do nothing
