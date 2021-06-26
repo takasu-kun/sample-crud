@@ -4,8 +4,8 @@
   "description": "This is a sample crud for testing only.",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js --ext js,json,yml",
+    "start": "node server.js",
+    "dev": "nodemon server.js --ext js,json,yml",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Danielle Guerzon",

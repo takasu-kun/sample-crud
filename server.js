@@ -9,11 +9,11 @@
       global.nodeCache = new NodeCache();
 
       // Routes
-      const routes = require('./routes');
+      const routes = require('./src/routes');
 
       // Loggers
-      const logger = require('./util/loggers/logger');
-      const errorHandler = require('./util/loggers/errors');
+      const logger = require('./src/util/loggers/logger');
+      const errorHandler = require('./src/util/loggers/errors');
 
       const app = express();
       app.disable('x-powered-by');
